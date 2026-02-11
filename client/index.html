@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D&D Dungeon Master</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <img src="images/logo.png" alt="Dungeon Master" class="logo-img">
+      <div class="mic-status" id="mic-status">
+        <span class="mic-dot" id="mic-dot"></span>
+        <span id="status-text">Inicializando...</span>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Chat / Transcript -->
+      <div class="chat" id="chat">
+        <div class="message dm-message">
+          <span class="message-author">DM</span>
+          <p>Cargando aventura...</p>
+        </div>
+      </div>
+
+      <!-- Text input fallback -->
+      <div class="input-bar">
+        <input type="text" id="text-input" placeholder="Escribe si prefieres no usar el micro..." autocomplete="off">
+        <button id="send-btn" class="btn-accent">Enviar</button>
+      </div>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Players -->
+      <section class="panel">
+        <h3>Jugadores</h3>
+        <div id="players-list"></div>
+        <button id="add-player-btn" class="btn-secondary btn-small">+ Jugador</button>
+      </section>
+
+      <!-- Location -->
+      <section class="panel">
+        <h3>Ubicacion</h3>
+        <p id="current-location">-</p>
+      </section>
+
+      <!-- Quest -->
+      <section class="panel">
+        <h3>Mision</h3>
+        <p id="current-quest">-</p>
+      </section>
+
+      <!-- Combat Tracker -->
+      <section class="panel" id="combat-panel" style="display:none;">
+        <h3>Combate - Ronda <span id="round-number">1</span></h3>
+        <div id="combatants-list"></div>
+        <div class="combat-controls">
+          <button id="next-turn-btn" class="btn-accent btn-small">Siguiente Turno</button>
+          <button id="end-combat-btn" class="btn-secondary btn-small">Fin Combate</button>
+        </div>
+      </section>
+
+      <!-- Dice Log -->
+      <section class="panel">
+        <h3>Tiradas del DM</h3>
+        <div id="dice-log" class="dice-log"></div>
+      </section>
+    </aside>
+
+    <!-- Footer Controls -->
+    <footer class="footer">
+      <button id="mic-toggle" class="btn-accent">Pausar Micro</button>
+      <button id="save-btn" class="btn-secondary">Guardar</button>
+      <button id="load-btn" class="btn-secondary">Cargar</button>
+      <button id="reset-btn" class="btn-danger">Reiniciar</button>
+    </footer>
+  </div>
+
+  <!-- Add Player Modal -->
+  <dialog id="add-player-dialog">
+    <form method="dialog">
+      <h3>Nuevo Jugador</h3>
+      <label>Nombre del personaje
+        <input type="text" id="player-name" required>
+      </label>
+      <label>Clase
+        <select id="player-class">
+          <option>Guerrero</option>
+          <option>Mago</option>
+          <option>Picaro</option>
+          <option>Clerigo</option>
+          <option>Explorador</option>
+          <option>Barbaro</option>
+          <option>Bardo</option>
+          <option>Druida</option>
+          <option>Monje</option>
+          <option>Paladin</option>
+          <option>Hechicero</option>
+          <option>Brujo</option>
+        </select>
+      </label>
+      <label>Nivel
+        <input type="number" id="player-level" value="1" min="1" max="20">
+      </label>
+      <label>HP
+        <input type="number" id="player-hp" value="10" min="1">
+      </label>
+      <label>CA (Clase de Armadura)
+        <input type="number" id="player-ac" value="10" min="1">
+      </label>
+      <div class="dialog-actions">
+        <button type="submit" value="cancel" class="btn-secondary">Cancelar</button>
+        <button type="submit" value="confirm" class="btn-accent">Anadir</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- VAD: ONNX Runtime + @ricky0123/vad-web (debe ir antes de app.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.wasm.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.29/dist/bundle.min.js"></script>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

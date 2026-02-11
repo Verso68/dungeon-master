@@ -35,10 +35,12 @@ server/
   package.json         # type: module, deps: express, multer, dotenv
   .env                 # OPENAI_API_KEY (nunca commitear)
 client/
-  index.html           # UI principal. Carga VAD via script tags CDN (onnxruntime-web + vad-web)
-  css/styles.css       # Tema oscuro medieval con CSS grid responsive
+  index.html           # UI principal. Carga VAD via script tags CDN (onnxruntime-web + vad-web). Google Fonts (MedievalSharp + Inter)
+  css/styles.css       # Tema verde oscuro medieval con CSS grid responsive, animaciones, tipografia fantasy
+  images/
+    logo.png           # Logo PNG con fondo transparente (reemplaza el h1 del header)
   js/
-    app.js             # Orquestador: filtro "Master", identificacion de jugador, audio -> IA -> combate -> UI
+    app.js             # Orquestador: filtro "Master", identificacion de jugador, colores por jugador, audio -> IA -> combate -> UI
     audio-manager.js   # Pipeline de voz: VAD (global `vad`) + Whisper + TTS (division por frases) + Float32->WAV + pausa anti-eco
     ai-manager.js      # GPT-4o-mini: system prompt, contexto dinamico (aventura + DMG + PHB), parseo de etiquetas
     combat-tracker.js  # Iniciativa, HP, turnos, condiciones, tiradas ocultas. Metodo getCombatSummary()
@@ -51,6 +53,20 @@ data/
 scripts/
   extract-pdf.py       # Extrae texto de PDFs con PyPDF2. Uso: python3 extract-pdf.py <pdf> <nombre>
 ```
+
+## Tema Visual
+
+- **Paleta de fondo**: Verde oscuro (`--bg-dark: #0a1a0f`, `--bg-medium: #0f2418`, `--bg-light: #162e1e`, `--bg-card: #1e3a28`)
+- **Tipografia**: Google Fonts — **MedievalSharp** para titulos, etiquetas DM y paneles; **Inter** para cuerpo de texto
+- **Logo**: `client/images/logo.png` (PNG transparente, 320x160px en el header) con `drop-shadow` dorado
+- **Header**: Altura automatica (`auto`), glow rojo inferior
+- **Colores por jugador**: Paleta de 6 colores fantasy en `app.js` (`PLAYER_COLORS`). Cada jugador recibe un color unico basado en su indice en `gameState.players`. Se aplica al nombre del autor y al `border-left` del mensaje
+  - Rojo dragon (`#e74c3c`), Azul arcano (`#3498db`), Verde bosque (`#2ecc71`), Naranja forja (`#e67e22`), Purpura hechizo (`#9b59b6`), Turquesa elfico (`#1abc9c`)
+- **Animaciones**: Fade-in + slide-up en mensajes nuevos (`messageIn 0.3s`), pulso en turno activo de combate (`turnPulse 2s`)
+- **Paneles**: Borde superior dorado de 2px, hover con glow dorado
+- **Bloques internos del DM**: Tinte de fondo al 5% de opacidad (morado para `dm-thinks`, naranja para `dm-event`, dorado para `dm-roll`)
+- **Input**: Glow rojo al focus
+- **Scrollbar**: Thumb con gradiente tematico, hover dorado
 
 ## Convenciones de Codigo
 
@@ -147,6 +163,7 @@ open http://localhost:3000    # requiere Chrome o Edge para VAD
 - Los PDFs estan en `.gitignore` por derechos de autor
 - El idioma de juego es espanol. El system prompt, la UI y el Whisper estan configurados para espanol
 - El VAD se carga via CDN (onnxruntime-web + @ricky0123/vad-web) como script tags globales, no como ES module imports. Requiere `baseAssetPath` y `onnxWASMBasePath` explicitos
+- El micro **arranca desactivado** por defecto para evitar gasto innecesario en Whisper. Se activa con el boton "Activar Micro". En `app.js` `init()`, se llama a `audioManager.togglePause()` justo despues de inicializar el VAD
 - El micro se pausa automaticamente mientras el DM habla para evitar eco (`isSpeaking` flag)
 - El micro se puede apagar por voz ("Master, espera") o con el boton fisico. Solo se reactiva con el boton "Activar Micro"
 - La voz del DM usa division por frases para reducir latencia: primera frase + resto se piden en paralelo a TTS, se reproducen secuencialmente
@@ -155,3 +172,4 @@ open http://localhost:3000    # requiere Chrome o Edge para VAD
 - El estado del juego se auto-guarda en localStorage cada 30 segundos
 - El historial de conversacion se limita a 50 mensajes; se envian los ultimos 15 a la IA
 - Los archivos ocultos (`.env`, `.gitignore`) no aparecen en Finder de macOS por defecto
+- **Repositorio GitHub**: https://github.com/Verso68/dungeon-master

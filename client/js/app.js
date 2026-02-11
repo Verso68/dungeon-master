@@ -99,14 +99,21 @@ audioManager.onTranscription = async (text) => {
     return;
   }
 
-  // Detectar "soy [nombre]" para trackear jugador activo
-  const soyMatch = cleaned.match(/^soy\s+(\w+)[,.\s]*/i);
-  if (soyMatch) {
-    const spokenName = soyMatch[1];
-    const player = gameState.players.find(
-      p => p.name.toLowerCase() === spokenName.toLowerCase()
-    );
-    activePlayer = player ? player.name : spokenName;
+  // Detectar nombre del jugador con varias formulaciones naturales
+  const namePatterns = [
+    /^soy\s+([\p{L}]+)/iu,
+    /(?:me llamo|mi (?:personaje|nombre) (?:es|se llama))\s+([\p{L}]+)/iu,
+  ];
+  for (const pattern of namePatterns) {
+    const match = cleaned.match(pattern);
+    if (match) {
+      const spokenName = match[1];
+      const player = gameState.players.find(
+        p => p.name.toLowerCase() === spokenName.toLowerCase()
+      );
+      activePlayer = player ? player.name : spokenName;
+      break;
+    }
   }
 
   // Preparar mensaje para la IA con identificación de jugador
